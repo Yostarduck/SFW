@@ -1,0 +1,39 @@
+{
+    "configurations": [
+        {
+            "name": "windows-cl",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/App/include",
+                "${workspaceFolder}/Vulkan-Headers/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "WINDOWS"
+            ],
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        },
+        {
+            "name": "linux-gcc",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/App/include",
+                "${workspaceFolder}/Vulkan-Headers/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "LINUX"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

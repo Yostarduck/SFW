@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/quacky/repos/SFW/Build/cmake_install.cmake",
+		"/home/quacky/repos/SFW/Build/OIS/cmake_install.cmake",
+		"/home/quacky/repos/SFW/Build/App/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/App.dir/link.d CMakeFiles/App.dir/source/main.cpp.o -o ../x64/Debug/App  -Wl,-rpath,/home/quacky/repos/SFW/Build/x64/Debug -lxcb ../x64/Debug/libOIS_d.so.1.6.0 -lX11
