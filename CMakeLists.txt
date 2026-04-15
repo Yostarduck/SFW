@@ -6,7 +6,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(SFW VERSION 1.0)
 
-option(SFW_BUILD_EXAMPLE "Build the Example project" ON)
+option(SFW_BUILD_EXAMPLE "Build the Example project" OFF)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(ARCH_DIR "x64")
