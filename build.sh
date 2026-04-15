@@ -21,5 +21,5 @@ echo "Selected Build Type: $BUILD_TYPE"
 
 rm -rf Build
 
-cmake -B Build -DCMAKE_BUILD_TYPE=${BUILD_TYPE^^}
+cmake -B Build -G Ninja -DCMAKE_BUILD_TYPE=${BUILD_TYPE^^}
 cmake --build Build --config $BUILD_TYPE

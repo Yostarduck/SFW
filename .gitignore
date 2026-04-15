@@ -40,5 +40,8 @@
 # debug information files
 *.dwo
 
+# vscode configuration directory
+.vscode/
+
 # Build output directory
 [Bb]uild/

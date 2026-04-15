@@ -45,15 +45,15 @@ echo "Selected Architecture: ${BUILD_ARCH}"
 
 if [ "${BUILD_TYPE}" = "Release" ]; then
   if [ "${BUILD_ARCH}" = "x64" ]; then
-    EXE=./Build/x64/Release/App
+    EXE=./Build/x64/Release/Example
   else
-    EXE=./Build/x86/Release/App
+    EXE=./Build/x86/Release/Example
   fi
 else
   if [ "${BUILD_ARCH}" = "x64" ]; then
-    EXE=./Build/x64/Debug/App
+    EXE=./Build/x64/Debug/Example
   else
-    EXE=./Build/x86/Debug/App
+    EXE=./Build/x86/Debug/Example
   fi
 fi
 

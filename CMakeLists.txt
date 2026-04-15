@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(SFW VERSION 1.0)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+project(SFW VERSION 1.0)
+
+option(SFW_BUILD_EXAMPLE "Build the Example project" ON)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(ARCH_DIR "x64")
@@ -14,10 +17,12 @@ endif()
 if(WIN32)
     # 
 elseif(LINUX)
-    # Only one backend can be used at a time on Linux, so default to XCB if none are set
-    set(SFW_USE_XCB     ON  CACHE BOOL "Use XCB backend on Linux")
-    set(SFW_USE_WAYLAND OFF CACHE BOOL "Use Wayland backend on Linux")
-    set(SFW_USE_X11     OFF CACHE BOOL "Use X11 backend on Linux")
+    # Only set Linux backend defaults when no backend option is explicitly set.
+    if(NOT DEFINED SFW_USE_XCB AND NOT DEFINED SFW_USE_WAYLAND AND NOT DEFINED SFW_USE_X11)
+        set(SFW_USE_XCB     ON  CACHE BOOL "Use XCB backend on Linux")
+        set(SFW_USE_WAYLAND OFF CACHE BOOL "Use Wayland backend on Linux")
+        set(SFW_USE_X11     OFF CACHE BOOL "Use X11 backend on Linux")
+    endif()
 elseif(APPLE)
     #
 else()
@@ -49,8 +54,10 @@ endif()
 add_compile_definitions($<$<CONFIG:Debug>:DEBUG>
                         $<$<CONFIG:Release>:RELEASE>)
 
-# OIS
-add_subdirectory(OIS)
+# SFW
+add_subdirectory(SFW)
 
-# App
-add_subdirectory(App)
+# Example
+if(SFW_BUILD_EXAMPLE)
+    add_subdirectory(Example)
+endif()

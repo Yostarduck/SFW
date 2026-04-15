@@ -14,8 +14,8 @@
                 "WINDOWS"
             ],
             "compilerPath": "cl.exe",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
             "intelliSenseMode": "windows-msvc-x64"
         },
         {
@@ -30,8 +30,8 @@
                 "LINUX"
             ],
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
             "intelliSenseMode": "linux-gcc-x64"
         }
     ],

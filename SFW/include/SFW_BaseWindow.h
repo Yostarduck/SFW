@@ -54,7 +54,6 @@ class BaseWindow
   shouldClose() const = 0;
 #pragma endregion
 
-/*
 #pragma region Visibility and focus
 	virtual void
   show() = 0;
@@ -126,6 +125,7 @@ class BaseWindow
   isDecorated() const = 0;
 #pragma endregion
 
+/*
 #pragma region Icon
 	virtual bool
   setIcon(const IconData& icon) = 0;
@@ -133,7 +133,7 @@ class BaseWindow
 	virtual bool
 	setIconFromFile(const std::string_view filePath) = 0;
 #pragma endregion
-	*/
+*/
 
 	virtual void*
 	getNativeHandle() const = 0;
