@@ -10,7 +10,9 @@ add_executable(Example
                source/main.cpp)
 
 target_include_directories(Example PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
-                                           ${CMAKE_CURRENT_BINARY_DIR}/include)
+                                           ${CMAKE_CURRENT_BINARY_DIR}/include
+                                           ${CMAKE_SOURCE_DIR}/SFW/include)
 
+target_link_libraries(Example PRIVATE SFW)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/ExampleConfig.h DESTINATION include)

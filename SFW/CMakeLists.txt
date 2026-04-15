@@ -17,6 +17,8 @@ option(SFW_USE_WIN "Use the Win32 backend on Windows (requires Windows SDK)" OFF
 option(SFW_USE_COCOA "Use the Cocoa backend on macOS (requires Cocoa framework)" OFF)
 
 set(SFW_SOURCES)
+list(APPEND SFW_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/SFW_Window.cpp)
 
 if(WIN32)
     # TODO: Add Win32 sources when backend is implemented.
