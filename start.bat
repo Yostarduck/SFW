@@ -45,14 +45,14 @@ echo Selected Arhitecture: %BUILD_ARCH%
 
 if %BUILD_TYPE%==Release (
   if %BUILD_ARCH%==x64 (
-    start ./Build/x64/Release/App.exe
+    start ./Build/x64/Release/Example.exe
   ) else (
-    start ./Build/x86/Release/App.exe
+    start ./Build/x86/Release/Example.exe
   )
 ) else (
   if %BUILD_ARCH%==x64 (
-    start ./Build/x64/Debug/App.exe
+    start ./Build/x64/Debug/Example.exe
   ) else (
-    start ./Build/x86/Debug/App.exe
+    start ./Build/x86/Debug/Example.exe
   )
 )

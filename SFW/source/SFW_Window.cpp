@@ -1,7 +1,7 @@
 #include "SFW_Window.h"
 
 #if defined(SFW_WINDOWS)
-  #include "Windows/SFW_WindowsWindow.h"
+  #include "Windows/SFW_Win32Window.h"
 #elif defined(SFW_LINUX)
     #if defined(SFW_USE_XCB)
       #include "Linux/XCB/SFW_XCBWindow.h"
@@ -21,7 +21,13 @@ Window*
 Window::create(const WindowCreateInfo& createInfo) {
 
 #if defined(SFW_WINDOWS)
-  // TODO: Implement Windows window creation
+  Win32Window* window = new Win32Window();
+  if (!window->createInternal(createInfo)) {
+    delete window;
+    return nullptr;
+  }
+
+  return window;
 #elif defined(SFW_LINUX)
     #if defined(SFW_USE_XCB)
       XCBWindow* window = new XCBWindow();

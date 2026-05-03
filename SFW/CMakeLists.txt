@@ -21,7 +21,8 @@ list(APPEND SFW_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SFW_Window.cpp)
 
 if(WIN32)
-    # TODO: Add Win32 sources when backend is implemented.
+    list(APPEND SFW_SOURCES
+         ${CMAKE_CURRENT_SOURCE_DIR}/source/Windows/SFW_Win32Window.cpp)
 elseif(LINUX)
     if(SFW_USE_XCB)
         list(APPEND SFW_SOURCES
@@ -47,7 +48,7 @@ target_include_directories(SFW PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
                                        ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 if(WIN32)
-    #
+    target_link_libraries(SFW PRIVATE user32 gdi32)
 elseif(LINUX)
     # Only one backend can be used at a time on Linux
     # Default to XCB if none are set

@@ -13,7 +13,7 @@ main(int32_t argc, char** argv) {
   createInfo.width = 1080;
   createInfo.height = 720;
   createInfo.visible = true;
-  createInfo.resizable = false;
+  createInfo.resizable = true;
   createInfo.decorated = true;
 
   SFW::Window* window = SFW::Window::create(createInfo);

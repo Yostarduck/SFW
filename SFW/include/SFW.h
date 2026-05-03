@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined(SFW_WINDOWS)
-  #include "SFW_WindowsWindow.h"
+  #include "Windows/SFW_Win32Window.h"
 
 #elif defined(SFW_LINUX)
   #if defined(SFW_USE_WAYLAND)
