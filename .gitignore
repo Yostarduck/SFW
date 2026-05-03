@@ -46,7 +46,8 @@
 # Build output directory
 [Bb]uild/
 
-# Miscellaneous files
+# Miscellaneous folders and files
+[Mm]isc/
 build.bat
 build.sh
 start.bat
