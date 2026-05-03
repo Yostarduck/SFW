@@ -246,7 +246,10 @@ Win32Window::setSize(const uint32_t width, const uint32_t height) {
                static_cast<LONG>(height)};
   AdjustWindowRectEx(&rect, style, FALSE, 0);
 
-  SetWindowPos(m_hwnd, nullptr, 0, 0,
+  SetWindowPos(m_hwnd,
+               nullptr,
+               0,
+               0,
                rect.right - rect.left,
                rect.bottom - rect.top,
                SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
@@ -339,7 +342,12 @@ Win32Window::setResizable(const bool resizable) {
 
   const DWORD style = Detail::windowStyle(resizable, m_isDecorated);
   SetWindowLongPtrW(m_hwnd, GWL_STYLE, static_cast<LONG_PTR>(style));
-  SetWindowPos(m_hwnd, nullptr, 0, 0, 0, 0,
+  SetWindowPos(m_hwnd,
+               nullptr,
+               0,
+               0,
+               0,
+               0,
                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
   m_isResizable = resizable;
 }
@@ -357,7 +365,12 @@ Win32Window::setDecorated(const bool decorated) {
 
   const DWORD style = Detail::windowStyle(m_isResizable, decorated);
   SetWindowLongPtrW(m_hwnd, GWL_STYLE, static_cast<LONG_PTR>(style));
-  SetWindowPos(m_hwnd, nullptr, 0, 0, 0, 0,
+  SetWindowPos(m_hwnd,
+               nullptr,
+               0,
+               0,
+               0,
+               0,
                SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
   m_isDecorated = decorated;
 }

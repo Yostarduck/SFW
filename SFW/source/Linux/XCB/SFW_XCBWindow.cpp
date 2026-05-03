@@ -29,11 +29,11 @@ applyResizableHint(xcb_connection_t* connection,
 	hints.height = static_cast<int32_t>(height);
 
 	if (!resizable) {
-		hints.flags = NormalHintsMinSize | NormalHintsMaxSize;
-		hints.minWidth = static_cast<int32_t>(width);
-		hints.minHeight = static_cast<int32_t>(height);
-		hints.maxWidth = static_cast<int32_t>(width);
-		hints.maxHeight = static_cast<int32_t>(height);
+		hints.flags			= NormalHintsMinSize | NormalHintsMaxSize;
+		hints.minWidth	= static_cast<int32_t>(width);
+		hints.minHeight	= static_cast<int32_t>(height);
+		hints.maxWidth	= static_cast<int32_t>(width);
+		hints.maxHeight	= static_cast<int32_t>(height);
 	}
 
 	xcb_change_property(connection,
