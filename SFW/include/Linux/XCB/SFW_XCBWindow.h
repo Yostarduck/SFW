@@ -187,6 +187,9 @@ class XCBWindow : public Window
   uint32_t m_width {0};
   uint32_t m_height {0};
 
+  uint32_t m_framebufferWidth {0};
+  uint32_t m_framebufferHeight {0};
+
   bool m_isVisible {false};
   bool m_isResizable {true};
   bool m_isDecorated {true};

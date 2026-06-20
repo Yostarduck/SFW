@@ -139,6 +139,8 @@ XCBWindow::createInternal(const WindowCreateInfo& createInfo)
   m_y = createInfo.y;
   m_width = createInfo.width;
   m_height = createInfo.height;
+  m_framebufferWidth = createInfo.width;
+  m_framebufferHeight = createInfo.height;
   m_isVisible = createInfo.visible;
   m_isResizable = createInfo.resizable;
   m_isDecorated = createInfo.decorated;
@@ -240,6 +242,8 @@ XCBWindow::destroy()
   m_y = 0;
   m_width = 0;
   m_height = 0;
+  m_framebufferWidth = 0;
+  m_framebufferHeight = 0;
   m_isVisible = false;
   m_isResizable = true;
   m_isDecorated = true;
@@ -276,6 +280,17 @@ XCBWindow::pollEvents()
     {
       case XCB_EXPOSE:
         break;
+
+      case XCB_CONFIGURE_NOTIFY:
+      {
+        xcb_configure_notify_event_t* configureEvent =
+          reinterpret_cast<xcb_configure_notify_event_t*>(event);
+        if (configureEvent->window == m_window) {
+          m_framebufferWidth = static_cast<uint32_t>(configureEvent->width);
+          m_framebufferHeight = static_cast<uint32_t>(configureEvent->height);
+        }
+        break;
+      }
 
       case XCB_CLIENT_MESSAGE:
       {
@@ -426,8 +441,8 @@ XCBWindow::getSize(uint32_t& width, uint32_t& height) const
 void
 XCBWindow::getFramebufferSize(uint32_t& width, uint32_t& height) const
 {
-  width = m_width;
-  height = m_height;
+  width = m_framebufferWidth;
+  height = m_framebufferHeight;
 }
 #pragma endregion
 
