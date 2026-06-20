@@ -6,16 +6,6 @@ set(APP_VERSION_MINOR 0)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SFWConfig.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/SFWConfig.h)
 
-option(SFW_BUILD_SHARED "Build SFW as a shared library (ON) or static library (OFF)" OFF)
-
-option(SFW_USE_XCB "Use the XCB backend on Linux (requires xcb library)" OFF)
-option(SFW_USE_WAYLAND "Use the Wayland backend on Linux (requires wayland-client library)" OFF)
-option(SFW_USE_X11 "Use the X11 backend on Linux (requires X11 library)" OFF)
-
-option(SFW_USE_WIN "Use the Win32 backend on Windows (requires Windows SDK)" OFF)
-
-option(SFW_USE_COCOA "Use the Cocoa backend on macOS (requires Cocoa framework)" OFF)
-
 set(SFW_SOURCES)
 list(APPEND SFW_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SFW_Window.cpp)
@@ -84,7 +74,7 @@ elseif(LINUX)
              ${CMAKE_CURRENT_SOURCE_DIR}/source/Linux/X11/SFW_X11Window.cpp)
     endif()
 elseif(APPLE)
-    # TODO: Add Cocoa sources when backend is implemented.
+    message(FATAL_ERROR "Apple backend not implement yet.")
 endif()
 
 set(SFW_LIBRARY_TYPE STATIC)
@@ -101,12 +91,6 @@ target_include_directories(SFW PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
 if(WIN32)
     target_link_libraries(SFW PRIVATE user32 gdi32)
 elseif(LINUX)
-    # Only one backend can be used at a time on Linux
-    # Default to XCB if none are set
-    if (NOT SFW_USE_XCB AND NOT SFW_USE_WAYLAND AND NOT SFW_USE_X11)
-      set(SFW_USE_XCB ON)
-    endif()
-
     if(SFW_USE_XCB)
         find_package(PkgConfig REQUIRED)
         pkg_check_modules(XCB REQUIRED xcb)

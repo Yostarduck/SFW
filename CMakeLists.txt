@@ -6,7 +6,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(SFW VERSION 1.0)
 
-option(SFW_BUILD_EXAMPLE "Build the Example project" OFF)
+option(SFW_BUILD_EXAMPLE    "Build the Example project" OFF)
+option(SFW_BUILD_SHARED     "Build SFW as a shared library (ON) or static library (OFF)" OFF)
+
+option(SFW_USE_XCB          "Use the XCB backend on Linux (requires xcb library)" OFF)
+option(SFW_USE_WAYLAND      "Use the Wayland backend on Linux (requires wayland-client library)" OFF)
+option(SFW_USE_X11          "Use the X11 backend on Linux (requires X11 library)" OFF)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(ARCH_DIR "x64")
@@ -17,11 +22,10 @@ endif()
 if(WIN32)
     # 
 elseif(LINUX)
-    # Only set Linux backend defaults when no backend option is explicitly set.
-    if(NOT DEFINED SFW_USE_XCB AND NOT DEFINED SFW_USE_WAYLAND AND NOT DEFINED SFW_USE_X11)
-        set(SFW_USE_XCB     ON  CACHE BOOL "Use XCB backend on Linux")
-        set(SFW_USE_WAYLAND OFF CACHE BOOL "Use Wayland backend on Linux")
-        set(SFW_USE_X11     OFF CACHE BOOL "Use X11 backend on Linux")
+    # Exactly one Linux backend must be active; default to XCB when the user has
+    # not enabled one explicitly.
+    if(NOT SFW_USE_XCB AND NOT SFW_USE_WAYLAND AND NOT SFW_USE_X11)
+        set(SFW_USE_XCB ON)
     endif()
 elseif(APPLE)
     #
