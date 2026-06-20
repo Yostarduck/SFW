@@ -7,7 +7,8 @@ namespace Detail
 {
 
 inline DWORD
-windowStyle(const bool resizable, const bool decorated) {
+windowStyle(const bool resizable, const bool decorated)
+{
   if (!decorated) {
     return WS_POPUP;
   }
@@ -20,7 +21,8 @@ windowStyle(const bool resizable, const bool decorated) {
 }
 
 inline std::wstring
-toWideString(const std::string_view str) {
+toWideString(const std::string_view str)
+{
   if (str.empty()) {
     return {};
   }
@@ -45,7 +47,8 @@ toWideString(const std::string_view str) {
 
 #pragma region Lifecycle
 bool
-Win32Window::createInternal(const WindowCreateInfo& createInfo) {
+Win32Window::createInternal(const WindowCreateInfo& createInfo)
+{
   if (m_hwnd != nullptr) {
     destroy();
   }
@@ -121,7 +124,8 @@ Win32Window::createInternal(const WindowCreateInfo& createInfo) {
 }
 
 void
-Win32Window::destroy() {
+Win32Window::destroy()
+{
   if (m_hwnd != nullptr) {
     DestroyWindow(m_hwnd);
     m_hwnd = nullptr;
@@ -143,19 +147,22 @@ Win32Window::destroy() {
 }
 
 bool
-Win32Window::isCreated() const {
+Win32Window::isCreated() const
+{
   return m_hwnd != nullptr;
 }
 
 void*
-Win32Window::getNativeHandle() const {
+Win32Window::getNativeHandle() const
+{
   return m_hwnd;
 }
 #pragma endregion
 
 #pragma region Event processing
 void
-Win32Window::pollEvents() {
+Win32Window::pollEvents()
+{
   if (m_hwnd == nullptr) {
     return;
   }
@@ -168,19 +175,22 @@ Win32Window::pollEvents() {
 }
 
 void
-Win32Window::requestClose() {
+Win32Window::requestClose()
+{
   m_shouldClose = true;
 }
 
 bool
-Win32Window::shouldClose() const {
+Win32Window::shouldClose() const
+{
   return m_shouldClose;
 }
 #pragma endregion
 
 #pragma region Visibility and focus
 void
-Win32Window::show() {
+Win32Window::show()
+{
   if (m_hwnd != nullptr && !m_isVisible) {
     ShowWindow(m_hwnd, SW_SHOW);
     m_isVisible = true;
@@ -188,7 +198,8 @@ Win32Window::show() {
 }
 
 void
-Win32Window::hide() {
+Win32Window::hide()
+{
   if (m_hwnd != nullptr && m_isVisible) {
     ShowWindow(m_hwnd, SW_HIDE);
     m_isVisible = false;
@@ -196,12 +207,14 @@ Win32Window::hide() {
 }
 
 bool
-Win32Window::isVisible() const {
+Win32Window::isVisible() const
+{
   return m_isVisible;
 }
 
 void
-Win32Window::focus() {
+Win32Window::focus()
+{
   if (m_hwnd != nullptr) {
     SetForegroundWindow(m_hwnd);
     SetFocus(m_hwnd);
@@ -209,14 +222,16 @@ Win32Window::focus() {
 }
 
 bool
-Win32Window::hasFocus() const {
+Win32Window::hasFocus() const
+{
   return m_hasFocus;
 }
 #pragma endregion
 
 #pragma region Position and size
 void
-Win32Window::setPosition(const int32_t x, const int32_t y) {
+Win32Window::setPosition(const int32_t x, const int32_t y)
+{
   if (m_hwnd == nullptr) {
     return;
   }
@@ -228,13 +243,15 @@ Win32Window::setPosition(const int32_t x, const int32_t y) {
 }
 
 void
-Win32Window::getPosition(int32_t& x, int32_t& y) const {
+Win32Window::getPosition(int32_t& x, int32_t& y) const
+{
   x = m_x;
   y = m_y;
 }
 
 void
-Win32Window::setSize(const uint32_t width, const uint32_t height) {
+Win32Window::setSize(const uint32_t width, const uint32_t height)
+{
   if (m_hwnd == nullptr) {
     return;
   }
@@ -258,13 +275,15 @@ Win32Window::setSize(const uint32_t width, const uint32_t height) {
 }
 
 void
-Win32Window::getSize(uint32_t& width, uint32_t& height) const {
+Win32Window::getSize(uint32_t& width, uint32_t& height) const
+{
   width  = m_width;
   height = m_height;
 }
 
 void
-Win32Window::getFramebufferSize(uint32_t& width, uint32_t& height) const {
+Win32Window::getFramebufferSize(uint32_t& width, uint32_t& height) const
+{
   if (m_hwnd == nullptr) {
     width  = 0;
     height = 0;
@@ -280,7 +299,8 @@ Win32Window::getFramebufferSize(uint32_t& width, uint32_t& height) const {
 
 #pragma region Window state
 void
-Win32Window::maximize() {
+Win32Window::maximize()
+{
   if (m_hwnd != nullptr && !m_isMaximized) {
     ShowWindow(m_hwnd, SW_MAXIMIZE);
     m_isMaximized = true;
@@ -289,7 +309,8 @@ Win32Window::maximize() {
 }
 
 void
-Win32Window::minimize() {
+Win32Window::minimize()
+{
   if (m_hwnd != nullptr && !m_isMinimized) {
     ShowWindow(m_hwnd, SW_MINIMIZE);
     m_isMaximized = false;
@@ -298,7 +319,8 @@ Win32Window::minimize() {
 }
 
 void
-Win32Window::restore() {
+Win32Window::restore()
+{
   if (m_hwnd != nullptr && (m_isMaximized || m_isMinimized)) {
     ShowWindow(m_hwnd, SW_RESTORE);
     m_isMaximized = false;
@@ -307,19 +329,22 @@ Win32Window::restore() {
 }
 
 bool
-Win32Window::isMaximized() const {
+Win32Window::isMaximized() const
+{
   return m_isMaximized;
 }
 
 bool
-Win32Window::isMinimized() const {
+Win32Window::isMinimized() const
+{
   return m_isMinimized;
 }
 #pragma endregion
 
 #pragma region Window attributes
 void
-Win32Window::setTitle(const std::string_view title) {
+Win32Window::setTitle(const std::string_view title)
+{
   if (m_hwnd == nullptr) {
     return;
   }
@@ -330,12 +355,14 @@ Win32Window::setTitle(const std::string_view title) {
 }
 
 std::string_view
-Win32Window::getTitle() const {
+Win32Window::getTitle() const
+{
   return m_title;
 }
 
 void
-Win32Window::setResizable(const bool resizable) {
+Win32Window::setResizable(const bool resizable)
+{
   if (m_hwnd == nullptr) {
     return;
   }
@@ -353,12 +380,14 @@ Win32Window::setResizable(const bool resizable) {
 }
 
 bool
-Win32Window::isResizable() const {
+Win32Window::isResizable() const
+{
   return m_isResizable;
 }
 
 void
-Win32Window::setDecorated(const bool decorated) {
+Win32Window::setDecorated(const bool decorated)
+{
   if (m_hwnd == nullptr) {
     return;
   }
@@ -376,13 +405,15 @@ Win32Window::setDecorated(const bool decorated) {
 }
 
 bool
-Win32Window::isDecorated() const {
+Win32Window::isDecorated() const
+{
   return m_isDecorated;
 }
 #pragma endregion
 
 LRESULT CALLBACK
-Win32Window::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+Win32Window::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
   Win32Window* self = reinterpret_cast<Win32Window*>(
     GetWindowLongPtrW(hwnd, GWLP_USERDATA));
 

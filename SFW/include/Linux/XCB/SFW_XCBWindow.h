@@ -11,52 +11,52 @@ namespace SFW
 namespace Detail
 {
 
-constexpr uint32_t NormalHintsMinSize			= 1u << 4;
-constexpr uint32_t NormalHintsMaxSize			= 1u << 5;
-constexpr uint32_t MotifHintsDecorations	= 1u << 1;
+constexpr uint32_t kNormalHintsMinSize    = 1u << 4;
+constexpr uint32_t kNormalHintsMaxSize    = 1u << 5;
+constexpr uint32_t kMotifHintsDecorations = 1u << 1;
 
 struct NormalSizeHints
 {
-	uint32_t	flags					{0};
-	int32_t		x							{0};
-	int32_t		y							{0};
-	int32_t		width					{0};
-	int32_t		height				{0};
-	int32_t		minWidth			{0};
-	int32_t		minHeight			{0};
-	int32_t		maxWidth			{0};
-	int32_t		maxHeight			{0};
-	int32_t		widthInc			{0};
-	int32_t		heightInc			{0};
-	int32_t		minAspectNum	{0};
-	int32_t		minAspectDen	{0};
-	int32_t		maxAspectNum	{0};
-	int32_t		maxAspectDen	{0};
-	int32_t		baseWidth			{0};
-	int32_t		baseHeight		{0};
-	uint32_t	winGravity		{0};
+  uint32_t flags {0};
+  int32_t x {0};
+  int32_t y {0};
+  int32_t width {0};
+  int32_t height {0};
+  int32_t minWidth {0};
+  int32_t minHeight {0};
+  int32_t maxWidth {0};
+  int32_t maxHeight {0};
+  int32_t widthInc {0};
+  int32_t heightInc {0};
+  int32_t minAspectNum {0};
+  int32_t minAspectDen {0};
+  int32_t maxAspectNum {0};
+  int32_t maxAspectDen {0};
+  int32_t baseWidth {0};
+  int32_t baseHeight {0};
+  uint32_t winGravity {0};
 };
 
 struct MotifWmHints
 {
-	uint32_t	flags				{0};
-	uint32_t	functions		{0};
-	uint32_t	decorations	{0};
-	int32_t		inputMode		{0};
-	uint32_t	status			{0};
+  uint32_t flags {0};
+  uint32_t functions {0};
+  uint32_t decorations {0};
+  int32_t inputMode {0};
+  uint32_t status {0};
 };
 
 inline void
 applyResizableHint(xcb_connection_t* connection,
-									 xcb_window_t window,
-									 const uint32_t width,
-									 const uint32_t height,
-									 const bool resizable);
+                   xcb_window_t window,
+                   const uint32_t width,
+                   const uint32_t height,
+                   const bool resizable);
 
 inline void
 applyDecoratedHint(xcb_connection_t* connection,
-									 xcb_window_t window,
-									 const bool decorated);
+                   xcb_window_t window,
+                   const bool decorated);
 
 inline xcb_atom_t
 internAtom(xcb_connection_t* connection, const char* atomName);
@@ -67,136 +67,134 @@ class XCBWindow : public Window
 {
  public:
 
-	~XCBWindow() = default;
+  ~XCBWindow() = default;
 
 #pragma region Lifecycle
-	bool
+  bool
   createInternal(const WindowCreateInfo& createInfo) override;
 
-	void
+  void
   destroy() override;
 
-	bool
+  bool
   isCreated() const override;
 
-	void*
-	getNativeHandle() const override;
+  void*
+  getNativeHandle() const override;
 #pragma endregion
 
 #pragma region Event processing
-	void
+  void
   pollEvents() override;
 
-	void
+  void
   requestClose() override;
 
-	bool
+  bool
   shouldClose() const override;
 #pragma endregion
 
 #pragma region Visibility and focus
-	void
+  void
   show() override;
 
-	void
+  void
   hide() override;
 
-	bool
+  bool
   isVisible() const override;
 
-	void
+  void
   focus() override;
 
-	bool
+  bool
   hasFocus() const override;
 #pragma endregion
 
 #pragma region Position and size
-	void
+  void
   setPosition(const int32_t x, const int32_t y) override;
-  
-	void
+
+  void
   getPosition(int32_t& x, int32_t& y) const override;
-  
-	void
+
+  void
   setSize(const uint32_t width, const uint32_t height) override;
-  
-	void
+
+  void
   getSize(uint32_t& width, uint32_t& height) const override;
 
-	void
+  void
   getFramebufferSize(uint32_t& width, uint32_t& height) const override;
 #pragma endregion
 
 #pragma region Window state
-	void
+  void
   maximize() override;
 
-	void
+  void
   minimize() override;
 
-	void
+  void
   restore() override;
 
-	bool
+  bool
   isMaximized() const override;
 
-	bool
+  bool
   isMinimized() const override;
 #pragma endregion
 
 #pragma region Window attributes
-	void
-	setTitle(const std::string_view title) override;
+  void
+  setTitle(const std::string_view title) override;
 
-	std::string_view
+  std::string_view
   getTitle() const override;
 
-	void
-	setResizable(const bool resizable) override;
+  void
+  setResizable(const bool resizable) override;
 
-	bool
+  bool
   isResizable() const override;
 
-	void
-	setDecorated(const bool decorated) override;
+  void
+  setDecorated(const bool decorated) override;
 
-	bool
+  bool
   isDecorated() const override;
 #pragma endregion
 
 /*
 #pragma region Icon
-	bool
+  bool
   setIcon(const IconData& icon) override;
 #pragma endregion
-	*/
-
- protected:
+*/
 
  private:
-	xcb_connection_t* m_connection {nullptr};
-	xcb_screen_t* m_screen {nullptr};
-	xcb_window_t m_window {XCB_WINDOW_NONE};
-	xcb_atom_t m_wmProtocolsAtom {XCB_ATOM_NONE};
-	xcb_atom_t m_wmDeleteWindowAtom {XCB_ATOM_NONE};
+  xcb_connection_t* m_connection {nullptr};
+  xcb_screen_t* m_screen {nullptr};
+  xcb_window_t m_window {XCB_WINDOW_NONE};
+  xcb_atom_t m_wmProtocolsAtom {XCB_ATOM_NONE};
+  xcb_atom_t m_wmDeleteWindowAtom {XCB_ATOM_NONE};
 
-	std::string m_title;
+  std::string m_title;
 
-	int32_t m_x {0};
-	int32_t m_y {0};
+  int32_t m_x {0};
+  int32_t m_y {0};
 
-	uint32_t m_width	{0};
-	uint32_t m_height	{0};
+  uint32_t m_width {0};
+  uint32_t m_height {0};
 
-	bool m_isVisible		{false};
-	bool m_isResizable	{true};
-	bool m_isDecorated	{true};
-	bool m_shouldClose	{false};
-	bool m_hasFocus			{false};
+  bool m_isVisible {false};
+  bool m_isResizable {true};
+  bool m_isDecorated {true};
+  bool m_shouldClose {false};
+  bool m_hasFocus {false};
 
-	bool m_isMaximized	{false};
-	bool m_isMinimized	{false};
+  bool m_isMaximized {false};
+  bool m_isMinimized {false};
 };
 
-};
+}

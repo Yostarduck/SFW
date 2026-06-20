@@ -34,106 +34,106 @@ struct IconData
 class Window
 {
  public:
-	virtual ~Window() = default;
+  virtual ~Window() = default;
 
 #pragma region Lifecycle
-	static Window*
-	create(const WindowCreateInfo& createInfo);
+  static Window*
+  create(const WindowCreateInfo& createInfo);
 
-	virtual bool
+  virtual bool
   createInternal(const WindowCreateInfo& createInfo) = 0;
 
-	virtual void
+  virtual void
   destroy() = 0;
 
-	virtual bool
+  virtual bool
   isCreated() const = 0;
 
   virtual void*
-	getNativeHandle() const = 0;
+  getNativeHandle() const = 0;
 #pragma endregion
 
 #pragma region Event processing
-	virtual void
+  virtual void
   pollEvents() = 0;
 
-	virtual void
+  virtual void
   requestClose() = 0;
 
-	virtual bool
+  virtual bool
   shouldClose() const = 0;
 #pragma endregion
 
 #pragma region Visibility and focus
-	virtual void
+  virtual void
   show() = 0;
 
-	virtual void
+  virtual void
   hide() = 0;
 
-	virtual bool
+  virtual bool
   isVisible() const = 0;
 
-	virtual void
+  virtual void
   focus() = 0;
 
-	virtual bool
+  virtual bool
   hasFocus() const = 0;
 #pragma endregion
 
 #pragma region Position and size
-	virtual void
+  virtual void
   setPosition(const int32_t x, const int32_t y) = 0;
-  
-	virtual void
+
+  virtual void
   getPosition(int32_t& x, int32_t& y) const = 0;
-  
-	virtual void
+
+  virtual void
   setSize(const uint32_t width, const uint32_t height) = 0;
-  
-	virtual void
+
+  virtual void
   getSize(uint32_t& width, uint32_t& height) const = 0;
 
-	virtual void
+  virtual void
   getFramebufferSize(uint32_t& width, uint32_t& height) const = 0;
 #pragma endregion
 
 #pragma region Window state
-	virtual void
+  virtual void
   maximize() = 0;
 
-	virtual void
+  virtual void
   minimize() = 0;
 
-	virtual void
+  virtual void
   restore() = 0;
 
-	virtual bool
+  virtual bool
   isMaximized() const = 0;
 
-	virtual bool
+  virtual bool
   isMinimized() const = 0;
 #pragma endregion
 
 #pragma region Window attributes
-	virtual void
-	setTitle(const std::string_view title) = 0;
+  virtual void
+  setTitle(const std::string_view title) = 0;
 
-	virtual std::string_view
+  virtual std::string_view
   getTitle() const = 0;
 
-	virtual void
-	setResizable(const bool resizable) = 0;
+  virtual void
+  setResizable(const bool resizable) = 0;
 
-	virtual bool
+  virtual bool
   isResizable() const = 0;
 
-	virtual void
-	setDecorated(const bool decorated) = 0;
+  virtual void
+  setDecorated(const bool decorated) = 0;
 
-	virtual bool
+  virtual bool
   isDecorated() const = 0;
-  
+
   /*
   virtual bool
   setIcon(const IconData& icon) = 0;

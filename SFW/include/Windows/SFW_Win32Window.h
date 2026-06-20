@@ -124,8 +124,6 @@ class Win32Window : public Window
   isDecorated() const override;
 #pragma endregion
 
- protected:
-
  private:
   static LRESULT CALLBACK
   windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

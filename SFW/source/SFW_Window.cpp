@@ -18,7 +18,8 @@ namespace SFW
 {
 
 Window*
-Window::create(const WindowCreateInfo& createInfo) {
+Window::create(const WindowCreateInfo& createInfo)
+{
 
 #if defined(SFW_WINDOWS)
   Win32Window* window = new Win32Window();

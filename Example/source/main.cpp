@@ -3,7 +3,8 @@
 #include "SFW_Window.h"
 
 int32_t
-main(int32_t argc, char** argv) {
+main(int32_t argc, char** argv)
+{
   std::cout << "Hello World!" << std::endl;
 
   SFW::WindowCreateInfo createInfo;
