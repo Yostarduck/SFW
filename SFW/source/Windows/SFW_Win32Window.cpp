@@ -46,83 +46,6 @@ toWideString(const std::string_view str)
 }
 
 #pragma region Lifecycle
-bool
-Win32Window::createInternal(const WindowCreateInfo& createInfo)
-{
-  if (m_hwnd != nullptr) {
-    destroy();
-  }
-
-  m_hInstance = GetModuleHandleW(nullptr);
-  if (m_hInstance == nullptr) {
-    return false;
-  }
-
-  WNDCLASSEXW wc {};
-  wc.cbSize        = sizeof(WNDCLASSEXW);
-  wc.style         = CS_HREDRAW | CS_VREDRAW;
-  wc.lpfnWndProc   = windowProc;
-  wc.hInstance     = m_hInstance;
-  wc.hCursor       = LoadCursor(nullptr, IDC_ARROW);
-  wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-  wc.lpszClassName = Detail::kWindowClassName;
-
-  if (!RegisterClassExW(&wc)) {
-    if (GetLastError() != ERROR_CLASS_ALREADY_EXISTS) {
-      m_hInstance = nullptr;
-      return false;
-    }
-  }
-
-  m_title       = createInfo.title;
-  m_x           = createInfo.x;
-  m_y           = createInfo.y;
-  m_width       = createInfo.width;
-  m_height      = createInfo.height;
-  m_isVisible   = createInfo.visible;
-  m_isResizable = createInfo.resizable;
-  m_isDecorated = createInfo.decorated;
-  m_shouldClose = false;
-  m_hasFocus    = false;
-  m_isMaximized = false;
-  m_isMinimized = false;
-
-  const DWORD style = Detail::windowStyle(m_isResizable, m_isDecorated);
-
-  RECT rect = {0,
-               0,
-               static_cast<LONG>(m_width),
-               static_cast<LONG>(m_height)};
-  AdjustWindowRectEx(&rect, style, FALSE, 0);
-
-  const int32_t windowWidth  = static_cast<int32_t>(rect.right - rect.left);
-  const int32_t windowHeight = static_cast<int32_t>(rect.bottom - rect.top);
-  const std::wstring wideTitle = Detail::toWideString(m_title);
-
-  m_hwnd = CreateWindowExW(0,
-                           Detail::kWindowClassName,
-                           wideTitle.c_str(),
-                           style,
-                           m_x, m_y,
-                           windowWidth, windowHeight,
-                           nullptr,
-                           nullptr,
-                           m_hInstance,
-                           this);
-
-  if (m_hwnd == nullptr) {
-    m_hInstance = nullptr;
-    return false;
-  }
-
-  if (m_isVisible) {
-    ShowWindow(m_hwnd, SW_SHOW);
-    UpdateWindow(m_hwnd);
-  }
-
-  return true;
-}
-
 void
 Win32Window::destroy()
 {
@@ -410,6 +333,83 @@ Win32Window::isDecorated() const
   return m_isDecorated;
 }
 #pragma endregion
+
+bool
+Win32Window::createInternal(const WindowCreateInfo& createInfo)
+{
+  if (m_hwnd != nullptr) {
+    destroy();
+  }
+
+  m_hInstance = GetModuleHandleW(nullptr);
+  if (m_hInstance == nullptr) {
+    return false;
+  }
+
+  WNDCLASSEXW wc {};
+  wc.cbSize        = sizeof(WNDCLASSEXW);
+  wc.style         = CS_HREDRAW | CS_VREDRAW;
+  wc.lpfnWndProc   = windowProc;
+  wc.hInstance     = m_hInstance;
+  wc.hCursor       = LoadCursor(nullptr, IDC_ARROW);
+  wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+  wc.lpszClassName = Detail::kWindowClassName;
+
+  if (!RegisterClassExW(&wc)) {
+    if (GetLastError() != ERROR_CLASS_ALREADY_EXISTS) {
+      m_hInstance = nullptr;
+      return false;
+    }
+  }
+
+  m_title       = createInfo.title;
+  m_x           = createInfo.x;
+  m_y           = createInfo.y;
+  m_width       = createInfo.width;
+  m_height      = createInfo.height;
+  m_isVisible   = createInfo.visible;
+  m_isResizable = createInfo.resizable;
+  m_isDecorated = createInfo.decorated;
+  m_shouldClose = false;
+  m_hasFocus    = false;
+  m_isMaximized = false;
+  m_isMinimized = false;
+
+  const DWORD style = Detail::windowStyle(m_isResizable, m_isDecorated);
+
+  RECT rect = {0,
+               0,
+               static_cast<LONG>(m_width),
+               static_cast<LONG>(m_height)};
+  AdjustWindowRectEx(&rect, style, FALSE, 0);
+
+  const int32_t windowWidth  = static_cast<int32_t>(rect.right - rect.left);
+  const int32_t windowHeight = static_cast<int32_t>(rect.bottom - rect.top);
+  const std::wstring wideTitle = Detail::toWideString(m_title);
+
+  m_hwnd = CreateWindowExW(0,
+                           Detail::kWindowClassName,
+                           wideTitle.c_str(),
+                           style,
+                           m_x, m_y,
+                           windowWidth, windowHeight,
+                           nullptr,
+                           nullptr,
+                           m_hInstance,
+                           this);
+
+  if (m_hwnd == nullptr) {
+    m_hInstance = nullptr;
+    return false;
+  }
+
+  if (m_isVisible) {
+    ShowWindow(m_hwnd, SW_SHOW);
+    UpdateWindow(m_hwnd);
+  }
+
+  return true;
+}
 
 LRESULT CALLBACK
 Win32Window::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

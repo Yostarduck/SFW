@@ -29,9 +29,6 @@ class Win32Window : public Window
   ~Win32Window() = default;
 
 #pragma region Lifecycle
-  bool
-  createInternal(const WindowCreateInfo& createInfo) override;
-
   void
   destroy() override;
 
@@ -123,6 +120,10 @@ class Win32Window : public Window
   bool
   isDecorated() const override;
 #pragma endregion
+
+ protected:
+  bool
+  createInternal(const WindowCreateInfo& createInfo) override;
 
  private:
   static LRESULT CALLBACK

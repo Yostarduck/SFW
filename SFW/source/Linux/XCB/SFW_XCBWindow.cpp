@@ -100,126 +100,6 @@ internAtom(xcb_connection_t* connection, const char* atomName)
 }
 
 #pragma region Lifecycle
-bool
-XCBWindow::createInternal(const WindowCreateInfo& createInfo)
-{
-  if (m_connection != nullptr || m_window != XCB_WINDOW_NONE) {
-    destroy();
-  }
-
-  int32_t screenIndex = 0;
-  m_connection = xcb_connect(nullptr, &screenIndex);
-
-  if (m_connection == nullptr || xcb_connection_has_error(m_connection) != 0) {
-    if (m_connection != nullptr) {
-      xcb_disconnect(m_connection);
-      m_connection = nullptr;
-    }
-
-    return false;
-  }
-
-  xcb_setup_t const* setup = xcb_get_setup(m_connection);
-  xcb_screen_iterator_t screenIterator = xcb_setup_roots_iterator(setup);
-
-  for (int32_t index = 0; index < screenIndex; ++index) {
-    xcb_screen_next(&screenIterator);
-  }
-
-  m_screen = screenIterator.data;
-  if (m_screen == nullptr) {
-    xcb_disconnect(m_connection);
-    m_connection = nullptr;
-    return false;
-  }
-
-  m_window = xcb_generate_id(m_connection);
-  m_title = createInfo.title;
-  m_x = createInfo.x;
-  m_y = createInfo.y;
-  m_width = createInfo.width;
-  m_height = createInfo.height;
-  m_framebufferWidth = createInfo.width;
-  m_framebufferHeight = createInfo.height;
-  m_isVisible = createInfo.visible;
-  m_isResizable = createInfo.resizable;
-  m_isDecorated = createInfo.decorated;
-  m_shouldClose = false;
-  m_hasFocus = false;
-  m_isMaximized = false;
-  m_isMinimized = false;
-
-  const uint32_t eventMask = XCB_EVENT_MASK_EXPOSURE |
-                             XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-                             XCB_EVENT_MASK_PROPERTY_CHANGE |
-                             XCB_EVENT_MASK_FOCUS_CHANGE;
-
-  const uint32_t valueMask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-  const uint32_t valueList[] = {m_screen->black_pixel, eventMask};
-
-  const xcb_void_cookie_t createCookie = xcb_create_window(m_connection,
-                                                           XCB_COPY_FROM_PARENT,
-                                                           m_window,
-                                                           m_screen->root,
-                                                           static_cast<int16_t>(m_x),
-                                                           static_cast<int16_t>(m_y),
-                                                           static_cast<uint16_t>(m_width),
-                                                           static_cast<uint16_t>(m_height),
-                                                           0,
-                                                           XCB_WINDOW_CLASS_INPUT_OUTPUT,
-                                                           m_screen->root_visual,
-                                                           valueMask,
-                                                           valueList);
-
-  if (xcb_request_check(m_connection, createCookie) != nullptr) {
-    xcb_disconnect(m_connection);
-    m_connection = nullptr;
-    m_screen = nullptr;
-    m_window = XCB_WINDOW_NONE;
-
-    return false;
-  }
-
-  if (!m_title.empty()) {
-    xcb_change_property(m_connection,
-                        XCB_PROP_MODE_REPLACE,
-                        m_window,
-                        XCB_ATOM_WM_NAME,
-                        XCB_ATOM_STRING,
-                        8,
-                        static_cast<uint32_t>(m_title.size()),
-                        m_title.data());
-  }
-
-  m_wmProtocolsAtom = Detail::internAtom(m_connection, "WM_PROTOCOLS");
-  m_wmDeleteWindowAtom = Detail::internAtom(m_connection, "WM_DELETE_WINDOW");
-
-  if (m_wmProtocolsAtom != XCB_ATOM_NONE && m_wmDeleteWindowAtom != XCB_ATOM_NONE) {
-    xcb_change_property(m_connection,
-                        XCB_PROP_MODE_REPLACE,
-                        m_window,
-                        m_wmProtocolsAtom,
-                        XCB_ATOM_ATOM,
-                        32,
-                        1,
-                        &m_wmDeleteWindowAtom);
-  }
-
-  Detail::applyResizableHint(m_connection,
-                             m_window,
-                             m_width,
-                             m_height,
-                             m_isResizable);
-  Detail::applyDecoratedHint(m_connection, m_window, m_isDecorated);
-
-  if (m_isVisible) {
-    xcb_map_window(m_connection, m_window);
-  }
-
-  xcb_flush(m_connection);
-  return xcb_connection_has_error(m_connection) == 0;
-}
-
 void
 XCBWindow::destroy()
 {
@@ -612,5 +492,125 @@ XCBWindow::isDecorated() const
   return m_isDecorated;
 }
 #pragma endregion
+
+bool
+XCBWindow::createInternal(const WindowCreateInfo& createInfo)
+{
+  if (m_connection != nullptr || m_window != XCB_WINDOW_NONE) {
+    destroy();
+  }
+
+  int32_t screenIndex = 0;
+  m_connection = xcb_connect(nullptr, &screenIndex);
+
+  if (m_connection == nullptr || xcb_connection_has_error(m_connection) != 0) {
+    if (m_connection != nullptr) {
+      xcb_disconnect(m_connection);
+      m_connection = nullptr;
+    }
+
+    return false;
+  }
+
+  xcb_setup_t const* setup = xcb_get_setup(m_connection);
+  xcb_screen_iterator_t screenIterator = xcb_setup_roots_iterator(setup);
+
+  for (int32_t index = 0; index < screenIndex; ++index) {
+    xcb_screen_next(&screenIterator);
+  }
+
+  m_screen = screenIterator.data;
+  if (m_screen == nullptr) {
+    xcb_disconnect(m_connection);
+    m_connection = nullptr;
+    return false;
+  }
+
+  m_window = xcb_generate_id(m_connection);
+  m_title = createInfo.title;
+  m_x = createInfo.x;
+  m_y = createInfo.y;
+  m_width = createInfo.width;
+  m_height = createInfo.height;
+  m_framebufferWidth = createInfo.width;
+  m_framebufferHeight = createInfo.height;
+  m_isVisible = createInfo.visible;
+  m_isResizable = createInfo.resizable;
+  m_isDecorated = createInfo.decorated;
+  m_shouldClose = false;
+  m_hasFocus = false;
+  m_isMaximized = false;
+  m_isMinimized = false;
+
+  const uint32_t eventMask = XCB_EVENT_MASK_EXPOSURE |
+                             XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+                             XCB_EVENT_MASK_PROPERTY_CHANGE |
+                             XCB_EVENT_MASK_FOCUS_CHANGE;
+
+  const uint32_t valueMask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+  const uint32_t valueList[] = {m_screen->black_pixel, eventMask};
+
+  const xcb_void_cookie_t createCookie = xcb_create_window(m_connection,
+                                                           XCB_COPY_FROM_PARENT,
+                                                           m_window,
+                                                           m_screen->root,
+                                                           static_cast<int16_t>(m_x),
+                                                           static_cast<int16_t>(m_y),
+                                                           static_cast<uint16_t>(m_width),
+                                                           static_cast<uint16_t>(m_height),
+                                                           0,
+                                                           XCB_WINDOW_CLASS_INPUT_OUTPUT,
+                                                           m_screen->root_visual,
+                                                           valueMask,
+                                                           valueList);
+
+  if (xcb_request_check(m_connection, createCookie) != nullptr) {
+    xcb_disconnect(m_connection);
+    m_connection = nullptr;
+    m_screen = nullptr;
+    m_window = XCB_WINDOW_NONE;
+
+    return false;
+  }
+
+  if (!m_title.empty()) {
+    xcb_change_property(m_connection,
+                        XCB_PROP_MODE_REPLACE,
+                        m_window,
+                        XCB_ATOM_WM_NAME,
+                        XCB_ATOM_STRING,
+                        8,
+                        static_cast<uint32_t>(m_title.size()),
+                        m_title.data());
+  }
+
+  m_wmProtocolsAtom = Detail::internAtom(m_connection, "WM_PROTOCOLS");
+  m_wmDeleteWindowAtom = Detail::internAtom(m_connection, "WM_DELETE_WINDOW");
+
+  if (m_wmProtocolsAtom != XCB_ATOM_NONE && m_wmDeleteWindowAtom != XCB_ATOM_NONE) {
+    xcb_change_property(m_connection,
+                        XCB_PROP_MODE_REPLACE,
+                        m_window,
+                        m_wmProtocolsAtom,
+                        XCB_ATOM_ATOM,
+                        32,
+                        1,
+                        &m_wmDeleteWindowAtom);
+  }
+
+  Detail::applyResizableHint(m_connection,
+                             m_window,
+                             m_width,
+                             m_height,
+                             m_isResizable);
+  Detail::applyDecoratedHint(m_connection, m_window, m_isDecorated);
+
+  if (m_isVisible) {
+    xcb_map_window(m_connection, m_window);
+  }
+
+  xcb_flush(m_connection);
+  return xcb_connection_has_error(m_connection) == 0;
+}
 
 }

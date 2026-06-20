@@ -11,7 +11,7 @@
       #include "Linux/X11/SFW_X11Window.h"
     #endif
 #elif defined(SFW_MACOS)
-  #include "MacOS/SFW_MacOSWindow.h"
+  //#include "MacOS/SFW_MacOSWindow.h"
 #endif
 
 namespace SFW
@@ -20,46 +20,28 @@ namespace SFW
 Window*
 Window::create(const WindowCreateInfo& createInfo)
 {
+  Window* window = nullptr;
 
 #if defined(SFW_WINDOWS)
-  Win32Window* window = new Win32Window();
-  if (!window->createInternal(createInfo)) {
-    delete window;
-    return nullptr;
-  }
-
-  return window;
+  window = new Win32Window();
 #elif defined(SFW_LINUX)
     #if defined(SFW_USE_XCB)
-      XCBWindow* window = new XCBWindow();
-      if (!window->createInternal(createInfo)) {
-        delete window;
-        return nullptr;
-      }
-
-      return window;
+      window = new XCBWindow();
     #elif defined(SFW_USE_WAYLAND)
-      WaylandWindow* window = new WaylandWindow();
-      if (!window->createInternal(createInfo)) {
-        delete window;
-        return nullptr;
-      }
-
-      return window;
+      window = new WaylandWindow();
     #elif defined(SFW_USE_X11)
-      X11Window* window = new X11Window();
-      if (!window->createInternal(createInfo)) {
-        delete window;
-        return nullptr;
-      }
-
-      return window;
+      window = new X11Window();
     #endif
 #elif defined(SFW_MACOS)
   // TODO: Implement MacOS window creation
 #endif
 
-  return nullptr;
+  if (!window->createInternal(createInfo)) {
+    delete window;
+    window = nullptr;
+  }
+
+  return window;
 }
 
 }

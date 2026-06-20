@@ -40,9 +40,6 @@ class Window
   static Window*
   create(const WindowCreateInfo& createInfo);
 
-  virtual bool
-  createInternal(const WindowCreateInfo& createInfo) = 0;
-
   virtual void
   destroy() = 0;
 
@@ -143,8 +140,8 @@ class Window
  protected:
   Window() = default;
 
- private:
-
+  virtual bool
+  createInternal(const WindowCreateInfo& createInfo) = 0;
 };
 
 }

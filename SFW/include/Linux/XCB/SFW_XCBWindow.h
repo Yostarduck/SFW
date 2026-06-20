@@ -70,9 +70,6 @@ class XCBWindow : public Window
   ~XCBWindow() = default;
 
 #pragma region Lifecycle
-  bool
-  createInternal(const WindowCreateInfo& createInfo) override;
-
   void
   destroy() override;
 
@@ -165,12 +162,9 @@ class XCBWindow : public Window
   isDecorated() const override;
 #pragma endregion
 
-/*
-#pragma region Icon
+ protected:
   bool
-  setIcon(const IconData& icon) override;
-#pragma endregion
-*/
+  createInternal(const WindowCreateInfo& createInfo) override;
 
  private:
   xcb_connection_t* m_connection {nullptr};

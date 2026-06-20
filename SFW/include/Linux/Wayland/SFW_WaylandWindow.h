@@ -17,9 +17,6 @@ class WaylandWindow : public Window
   ~WaylandWindow() = default;
 
 #pragma region Lifecycle
-  bool
-  createInternal(const WindowCreateInfo& createInfo) override;
-
   void
   destroy() override;
 
@@ -111,6 +108,10 @@ class WaylandWindow : public Window
   bool
   isDecorated() const override;
 #pragma endregion
+
+ protected:
+  bool
+  createInternal(const WindowCreateInfo& createInfo) override;
 
  private:
   // Wayland clients only become visible once a buffer is attached and

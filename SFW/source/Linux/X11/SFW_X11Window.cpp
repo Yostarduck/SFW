@@ -71,95 +71,6 @@ applyDecoratedHint(Display* display, ::Window window, const bool decorated)
 }
 
 #pragma region Lifecycle
-bool
-X11Window::createInternal(const WindowCreateInfo& createInfo)
-{
-  if (m_display != nullptr) {
-    destroy();
-  }
-
-  m_display = XOpenDisplay(nullptr);
-  if (m_display == nullptr) {
-    return false;
-  }
-
-  m_screen = DefaultScreen(m_display);
-  m_rootWindow = RootWindow(m_display, m_screen);
-
-  m_title = createInfo.title;
-  m_x = createInfo.x;
-  m_y = createInfo.y;
-  m_width = createInfo.width;
-  m_height = createInfo.height;
-  m_framebufferWidth = createInfo.width;
-  m_framebufferHeight = createInfo.height;
-  m_isVisible = createInfo.visible;
-  m_isResizable = createInfo.resizable;
-  m_isDecorated = createInfo.decorated;
-  m_shouldClose = false;
-  m_hasFocus = false;
-  m_isMaximized = false;
-  m_isMinimized = false;
-
-  XSetWindowAttributes attributes {};
-  attributes.background_pixel = BlackPixel(m_display, m_screen);
-  attributes.event_mask = ExposureMask |
-                          StructureNotifyMask |
-                          PropertyChangeMask |
-                          FocusChangeMask;
-
-  m_window = XCreateWindow(m_display,
-                           m_rootWindow,
-                           m_x,
-                           m_y,
-                           m_width,
-                           m_height,
-                           0,
-                           CopyFromParent,
-                           InputOutput,
-                           CopyFromParent,
-                           CWBackPixel | CWEventMask,
-                           &attributes);
-
-  if (m_window == None) {
-    XCloseDisplay(m_display);
-    m_display = nullptr;
-    m_screen = 0;
-    m_rootWindow = None;
-    return false;
-  }
-
-  m_wmProtocolsAtom = Detail::internAtom(m_display, "WM_PROTOCOLS");
-  m_wmDeleteWindowAtom = Detail::internAtom(m_display, "WM_DELETE_WINDOW");
-  m_netWmStateAtom = Detail::internAtom(m_display, "_NET_WM_STATE");
-  m_netWmStateMaximizedVertAtom =
-    Detail::internAtom(m_display, "_NET_WM_STATE_MAXIMIZED_VERT");
-  m_netWmStateMaximizedHorzAtom =
-    Detail::internAtom(m_display, "_NET_WM_STATE_MAXIMIZED_HORZ");
-  m_netWmNameAtom = Detail::internAtom(m_display, "_NET_WM_NAME");
-  m_utf8StringAtom = Detail::internAtom(m_display, "UTF8_STRING");
-
-  if (m_wmDeleteWindowAtom != None) {
-    XSetWMProtocols(m_display, m_window, &m_wmDeleteWindowAtom, 1);
-  }
-
-  applyTitle();
-
-  Detail::applyResizableHint(m_display,
-                             m_window,
-                             m_width,
-                             m_height,
-                             m_isResizable);
-  Detail::applyDecoratedHint(m_display, m_window, m_isDecorated);
-
-  if (m_isVisible) {
-    XMapWindow(m_display, m_window);
-  }
-
-  XFlush(m_display);
-  return true;
-}
-
 void
 X11Window::destroy()
 {
@@ -384,35 +295,6 @@ X11Window::getFramebufferSize(uint32_t& width, uint32_t& height) const
 
 #pragma region Window state
 void
-X11Window::sendMaximizedState(const bool maximized)
-{
-  if (m_display == nullptr ||
-      m_window == None ||
-      m_netWmStateAtom == None) {
-    return;
-  }
-
-  XClientMessageEvent event {};
-  event.type = ClientMessage;
-  event.window = m_window;
-  event.message_type = m_netWmStateAtom;
-  event.format = 32;
-  event.data.l[0] = maximized ? Detail::kNetWmStateAdd
-                              : Detail::kNetWmStateRemove;
-  event.data.l[1] = static_cast<long>(m_netWmStateMaximizedVertAtom);
-  event.data.l[2] = static_cast<long>(m_netWmStateMaximizedHorzAtom);
-  event.data.l[3] = 1;
-  event.data.l[4] = 0;
-
-  XSendEvent(m_display,
-             m_rootWindow,
-             False,
-             SubstructureNotifyMask | SubstructureRedirectMask,
-             reinterpret_cast<XEvent*>(&event));
-  XFlush(m_display);
-}
-
-void
 X11Window::maximize()
 {
   if (m_display != nullptr && m_window != None && !m_isMaximized) {
@@ -471,27 +353,6 @@ X11Window::isMinimized() const
 
 #pragma region Window attributes
 void
-X11Window::applyTitle()
-{
-  if (m_display == nullptr || m_window == None) {
-    return;
-  }
-
-  if (m_netWmNameAtom != None && m_utf8StringAtom != None) {
-    XChangeProperty(m_display,
-                    m_window,
-                    m_netWmNameAtom,
-                    m_utf8StringAtom,
-                    8,
-                    PropModeReplace,
-                    reinterpret_cast<const unsigned char*>(m_title.data()),
-                    static_cast<int>(m_title.size()));
-  }
-
-  XStoreName(m_display, m_window, m_title.c_str());
-}
-
-void
 X11Window::setTitle(const std::string_view title)
 {
   if (m_display != nullptr && m_window != None) {
@@ -543,6 +404,147 @@ bool
 X11Window::isDecorated() const
 {
   return m_isDecorated;
+}
+#pragma endregion
+
+bool
+X11Window::createInternal(const WindowCreateInfo& createInfo)
+{
+  if (m_display != nullptr) {
+    destroy();
+  }
+
+  m_display = XOpenDisplay(nullptr);
+  if (m_display == nullptr) {
+    return false;
+  }
+
+  m_screen = DefaultScreen(m_display);
+  m_rootWindow = RootWindow(m_display, m_screen);
+
+  m_title = createInfo.title;
+  m_x = createInfo.x;
+  m_y = createInfo.y;
+  m_width = createInfo.width;
+  m_height = createInfo.height;
+  m_framebufferWidth = createInfo.width;
+  m_framebufferHeight = createInfo.height;
+  m_isVisible = createInfo.visible;
+  m_isResizable = createInfo.resizable;
+  m_isDecorated = createInfo.decorated;
+  m_shouldClose = false;
+  m_hasFocus = false;
+  m_isMaximized = false;
+  m_isMinimized = false;
+
+  XSetWindowAttributes attributes {};
+  attributes.background_pixel = BlackPixel(m_display, m_screen);
+  attributes.event_mask = ExposureMask |
+                          StructureNotifyMask |
+                          PropertyChangeMask |
+                          FocusChangeMask;
+
+  m_window = XCreateWindow(m_display,
+                           m_rootWindow,
+                           m_x,
+                           m_y,
+                           m_width,
+                           m_height,
+                           0,
+                           CopyFromParent,
+                           InputOutput,
+                           CopyFromParent,
+                           CWBackPixel | CWEventMask,
+                           &attributes);
+
+  if (m_window == None) {
+    XCloseDisplay(m_display);
+    m_display = nullptr;
+    m_screen = 0;
+    m_rootWindow = None;
+    return false;
+  }
+
+  m_wmProtocolsAtom = Detail::internAtom(m_display, "WM_PROTOCOLS");
+  m_wmDeleteWindowAtom = Detail::internAtom(m_display, "WM_DELETE_WINDOW");
+  m_netWmStateAtom = Detail::internAtom(m_display, "_NET_WM_STATE");
+  m_netWmStateMaximizedVertAtom =
+    Detail::internAtom(m_display, "_NET_WM_STATE_MAXIMIZED_VERT");
+  m_netWmStateMaximizedHorzAtom =
+    Detail::internAtom(m_display, "_NET_WM_STATE_MAXIMIZED_HORZ");
+  m_netWmNameAtom = Detail::internAtom(m_display, "_NET_WM_NAME");
+  m_utf8StringAtom = Detail::internAtom(m_display, "UTF8_STRING");
+
+  if (m_wmDeleteWindowAtom != None) {
+    XSetWMProtocols(m_display, m_window, &m_wmDeleteWindowAtom, 1);
+  }
+
+  applyTitle();
+
+  Detail::applyResizableHint(m_display,
+                             m_window,
+                             m_width,
+                             m_height,
+                             m_isResizable);
+  Detail::applyDecoratedHint(m_display, m_window, m_isDecorated);
+
+  if (m_isVisible) {
+    XMapWindow(m_display, m_window);
+  }
+
+  XFlush(m_display);
+  return true;
+}
+
+#pragma region Internal helpers
+void
+X11Window::applyTitle()
+{
+  if (m_display == nullptr || m_window == None) {
+    return;
+  }
+
+  if (m_netWmNameAtom != None && m_utf8StringAtom != None) {
+    XChangeProperty(m_display,
+                    m_window,
+                    m_netWmNameAtom,
+                    m_utf8StringAtom,
+                    8,
+                    PropModeReplace,
+                    reinterpret_cast<const unsigned char*>(m_title.data()),
+                    static_cast<int>(m_title.size()));
+  }
+
+  XStoreName(m_display, m_window, m_title.c_str());
+}
+
+void
+X11Window::sendMaximizedState(const bool maximized)
+{
+  if (m_display == nullptr ||
+      m_window == None ||
+      m_netWmStateAtom == None) {
+    return;
+  }
+
+  XClientMessageEvent event {};
+  event.type = ClientMessage;
+  event.window = m_window;
+  event.message_type = m_netWmStateAtom;
+  event.format = 32;
+  event.data.l[0] = maximized ? Detail::kNetWmStateAdd
+                              : Detail::kNetWmStateRemove;
+  event.data.l[1] = static_cast<long>(m_netWmStateMaximizedVertAtom);
+  event.data.l[2] = static_cast<long>(m_netWmStateMaximizedHorzAtom);
+  event.data.l[3] = 1;
+  event.data.l[4] = 0;
+
+  XSendEvent(m_display,
+             m_rootWindow,
+             False,
+             SubstructureNotifyMask | SubstructureRedirectMask,
+             reinterpret_cast<XEvent*>(&event));
+  XFlush(m_display);
 }
 #pragma endregion
 

@@ -49,9 +49,6 @@ class X11Window : public Window
   ~X11Window() = default;
 
 #pragma region Lifecycle
-  bool
-  createInternal(const WindowCreateInfo& createInfo) override;
-
   void
   destroy() override;
 
@@ -143,6 +140,10 @@ class X11Window : public Window
   bool
   isDecorated() const override;
 #pragma endregion
+
+ protected:
+  bool
+  createInternal(const WindowCreateInfo& createInfo) override;
 
  private:
   // Pushes m_title to the window via _NET_WM_NAME (UTF-8) and WM_NAME.
