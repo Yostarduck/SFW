@@ -94,9 +94,9 @@ Useful flags (passed on the command line as `-D<flag>=ON`):
 | -------------------- | ------- | ----------------------------------------- |
 | `SFW_BUILD_EXAMPLE`  | `OFF`   | Build the `Example` executable            |
 | `SFW_BUILD_SHARED`   | `OFF`   | Build a shared library instead of static  |
-| `SFW_USE_XCB`        | on Linux when none set | Use the XCB backend         |
-| `SFW_USE_WAYLAND`    | `OFF`   | Use the Wayland backend                   |
-| `SFW_USE_X11`        | `OFF`   | Use the X11 backend                       |
+| `SFW_USE_XCB`        | on Linux when none set | Use the Linux XCB backend  |
+| `SFW_USE_WAYLAND`    | `OFF`   | Use the Linux Wayland backend             |
+| `SFW_USE_X11`        | `OFF`   | Use the Linux X11 backend                 |
 
 On Linux, exactly one backend is active; XCB is used when none is selected
 explicitly.
