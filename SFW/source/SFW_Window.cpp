@@ -39,7 +39,13 @@ Window::create(const WindowCreateInfo& createInfo)
 
       return window;
     #elif defined(SFW_USE_WAYLAND)
-      // TODO: Implement Wayland window creation
+      WaylandWindow* window = new WaylandWindow();
+      if (!window->createInternal(createInfo)) {
+        delete window;
+        return nullptr;
+      }
+
+      return window;
     #elif defined(SFW_USE_X11)
       // TODO: Implement X11 window creation
     #endif
