@@ -3,9 +3,6 @@ cmake_minimum_required(VERSION 3.16)
 set(APP_VERSION_MAJOR 1)
 set(APP_VERSION_MINOR 0)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SFWConfig.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/include/SFWConfig.h)
-
 set(SFW_SOURCES)
 list(APPEND SFW_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/source/SFW_Window.cpp)
