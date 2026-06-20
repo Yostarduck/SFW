@@ -80,7 +80,8 @@ elseif(LINUX)
         list(APPEND SFW_SOURCES
              ${CMAKE_CURRENT_SOURCE_DIR}/source/Linux/Wayland/SFW_WaylandWindow.cpp)
     elseif(SFW_USE_X11)
-        message(FATAL_ERROR "SFW_USE_X11 is enabled, but X11 backend sources are not added yet.")
+        list(APPEND SFW_SOURCES
+             ${CMAKE_CURRENT_SOURCE_DIR}/source/Linux/X11/SFW_X11Window.cpp)
     endif()
 elseif(APPLE)
     # TODO: Add Cocoa sources when backend is implemented.

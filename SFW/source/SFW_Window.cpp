@@ -47,7 +47,13 @@ Window::create(const WindowCreateInfo& createInfo)
 
       return window;
     #elif defined(SFW_USE_X11)
-      // TODO: Implement X11 window creation
+      X11Window* window = new X11Window();
+      if (!window->createInternal(createInfo)) {
+        delete window;
+        return nullptr;
+      }
+
+      return window;
     #endif
 #elif defined(SFW_MACOS)
   // TODO: Implement MacOS window creation

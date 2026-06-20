@@ -9,7 +9,7 @@
   #elif defined(SFW_USE_XCB)
     #include "Linux/XCB/SFW_XCBWindow.h"
   #else // SFW_USE_X11
-    //#include "Linux/X11/SFW_X11Window.h"
+    #include "Linux/X11/SFW_X11Window.h"
   #endif
 
 #elif defined(SFW_MACOS)
